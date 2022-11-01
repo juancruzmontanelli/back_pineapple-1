@@ -23,20 +23,20 @@ Users.init(
       type: s.STRING,
       allowNull: false,
     },
+    address: {
+      type: s.STRING,
+      allowNull: false,
+    },
     email: {
       type: s.STRING,
       allowNull: false,
       validate: { isEmail: true },
       unique: true,
     },
-    address: {
-      type: s.STRING,
-      allowNull: false,
-    },
     salt: {
       type: s.STRING,
     },
-    password: {
+    pass: {
       type: s.STRING,
       allowNull: false,
     },
@@ -54,8 +54,8 @@ Users.beforeCreate((user) => {
 
   user.salt = salt;
 
-  return user.hash(user.password, salt).then((hash) => {
-    user.password = hash;
+  return user.hash(user.pass, salt).then((hash) => {
+    user.pass = hash;
   });
 });
 

@@ -3,7 +3,10 @@ const { generateToken } = require("../config/tokens");
 
 const userRegister = (req, res, next) => {
   Users.create(req.body)
-    .then((result) => res.send(result))
+    .then((result) => result)
+    .then(({ id, name, address, email }) =>
+      res.send({ id, name, address, email })
+    )
     .catch(next);
 };
 
@@ -19,6 +22,7 @@ const userLogin = (req, res) => {
         id: user.id,
         email: user.email,
         name: user.name,
+        isAdmin: isAdmin,
       };
 
       const token = generateToken(payload);
@@ -50,4 +54,25 @@ const userUpdate = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { userRegister, userLogin, userLogout, userData, userUpdate };
+const allUsers = (req, res, next) => {
+  Users.findAll()
+    .then((users) => res.send(users))
+    .catch(next);
+};
+
+const deleteUser = (req, res, next) => {
+  const { id } = req.params;
+  Users.destroy({ where: { id: id } })
+    .then(() => res.sendStatus(204))
+    .catch(next);
+};
+
+module.exports = {
+  userRegister,
+  userLogin,
+  userLogout,
+  userData,
+  userUpdate,
+  allUsers,
+  deleteUser,
+};
