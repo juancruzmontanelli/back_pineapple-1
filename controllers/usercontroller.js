@@ -40,4 +40,14 @@ const userData = (req, res) => {
   res.send(req.user);
 };
 
-module.exports = { userRegister, userLogin, userLogout, userData };
+const userUpdate = (req, res, next) => {
+  const { id } = req.params;
+  Users.update(req.body, {
+    where: { id: id },
+    returning: true,
+  })
+    .then(([afect, update]) => res.send(update[0]))
+    .catch(next);
+};
+
+module.exports = { userRegister, userLogin, userLogout, userData, userUpdate };
