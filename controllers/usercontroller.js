@@ -36,4 +36,8 @@ const userLogout = (req, res) => {
   res.sendStatus(204);
 };
 
-module.exports = { userRegister, userLogin, userLogout };
+const userData = (req, res) => {
+  res.send(req.user);
+};
+
+module.exports = { userRegister, userLogin, userLogout, userData };
