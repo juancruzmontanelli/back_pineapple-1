@@ -18,8 +18,11 @@ app.use((err, req, res, next) => {
   res.status(500).send(err.message);
 });
 
-//db.sync({ force: false })
-//  .then(() =>
-//    app.listen(3001, () => console.log("Servidor escuchando en el puerto 3001"))
-//  )
-  //.catch(console.error);
+db.sync({ force: false })
+ .then(() =>
+   app.listen(3001, () => console.log("Servidor escuchando en el puerto 3001"))
+ )
+.catch(console.error);
+
+// const PORT = 3001;
+// app.listen(PORT, () => console.log(`Servidor escuchando en el puerto ${PORT}`));
