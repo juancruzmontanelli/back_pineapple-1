@@ -7,7 +7,7 @@ class Users extends s.Model {
   }
   validatePassword(password) {
     return this.hash(password, this.salt).then(
-      (newHash) => newHash === this.password
+      (newHash) => newHash === this.pass
     );
   }
 }

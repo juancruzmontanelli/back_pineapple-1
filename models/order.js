@@ -11,17 +11,16 @@ Order.init(
     },
     idUser: {
       type: S.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     orderDate: {
       type: S.DATE,
-      allowNull: false
+      allowNull: false,
     },
-    
   },
   {
     sequelize: db,
     modelName: "order",
   }
 );
-module.exports = Order
+module.exports = Order;

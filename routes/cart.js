@@ -5,6 +5,7 @@ const {
   deleteCart,
   editProduct,
   addProduct,
+  buyProducts,
 } = require("../controllers/cartControler");
 
 // Ruta para agregar productos al carrito
@@ -15,5 +16,7 @@ router.put("/:id", editProduct);
 
 //Ruta para eliminar productos al carrito
 router.delete("/:id", deleteCart);
+
+router.post("/buy", buyProducts);
 
 module.exports = router;

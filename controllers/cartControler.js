@@ -1,8 +1,18 @@
-const addProduct = (req, res) => {
-  console.log(`Called addProduct ${req.originalUrl}`);
-  res.status(201).send({
-    añadir: "producto",
-  });
+const { Users, OrderItem, Product, CartItem } = require("../models");
+
+const addProduct = (req, res, next) => {
+  const { id, quantity } = req.body;
+  Users.findOne({ where: { id: "1" } })
+    .then((user) =>
+      Product.findOne({ where: { id: id } }).then((product) => {
+        CartItem.create({
+          productId: product.id,
+          userId: user.id,
+          quantity: quantity,
+        }).then((cart) => res.send(cart));
+      })
+    )
+    .catch(next);
 };
 
 const editProduct = (req, res) => {
@@ -21,4 +31,17 @@ const deleteCart = (req, res) => {
   });
 };
 
-module.exports = { addProduct, deleteCart, editProduct };
+const buyProducts = (req, res, next) => {
+  const { id } = req.body;
+  CartItem.findAll({ where: { userId: id } })
+    .then((items) => {
+      OrderItem.bulkCreate(items).then(() =>
+        CartItem.destroy({
+          where: { userId: id },
+        }).then(() => res.send(204))
+      );
+    })
+    .catch(next);
+};
+
+module.exports = { addProduct, deleteCart, editProduct, buyProducts };
