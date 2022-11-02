@@ -6,3 +6,4 @@ const db = new Sequelize("pineapple", null, null, {
 });
 
 module.exports = db;
+
