@@ -1,5 +1,5 @@
 const S = require("sequelize");
-const db = require("../db");
+const db = require("../config/db");
 
 class CartItem extends S.Model {}
 
@@ -14,7 +14,7 @@ CartItem.init(
       type: S.INTEGER,
       allowNull: false,
     },
-    cartId: {
+    userId: {
       type: S.INTEGER,
       allowNull: false,
       // Q: Quieres foreign key (llave extranjero)?

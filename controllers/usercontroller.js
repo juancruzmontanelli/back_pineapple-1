@@ -11,18 +11,18 @@ const userRegister = (req, res, next) => {
 };
 
 const userLogin = (req, res) => {
-  const { email, password } = req.body;
+  const { email, pass } = req.body;
 
   Users.findOne({ where: { email } }).then((user) => {
     if (!user) return res.sendStatus(401);
-    user.validatePassword(password).then((isValid) => {
+    user.validatePassword(pass).then((isValid) => {
       if (!isValid) return res.sendStatus(401);
 
       const payload = {
         id: user.id,
         email: user.email,
         name: user.name,
-        isAdmin: isAdmin,
+        isAdmin: user.isAdmin,
       };
 
       const token = generateToken(payload);

@@ -4,7 +4,6 @@ const router = require("./routes");
 const db = require("./config/db");
 // const cookieParser = require("cookie-parser");
 
-
 // parsing middleware
 app.use(express.json());
 app.use("/api", router);
@@ -22,8 +21,7 @@ app.use((err, req, res, next) => {
 });
 
 db.sync({ force: false })
- .then(() =>
-   app.listen(3001, () => console.log("Servidor escuchando en el puerto 3001"))
- )
+  .then(() =>
+    app.listen(3001, () => console.log("Servidor escuchando en el puerto 3001"))
+  )
   .catch(console.error);
-
