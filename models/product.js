@@ -16,6 +16,9 @@ Product.init(
     name: {
       type: Sequelize.STRING,
     },
+    img: {
+        type: Sequelize.STRING,
+    },
     brand: {
       type: Sequelize.STRING,
       allowNull: false,
