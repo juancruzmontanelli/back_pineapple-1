@@ -17,7 +17,7 @@ Product.init(
       type: Sequelize.STRING,
     },
     img: {
-      type: Sequelize.STRING,
+        type: Sequelize.STRING,
     },
     brand: {
       type: Sequelize.STRING,
@@ -78,7 +78,7 @@ Product.init(
     description: {
       type: Sequelize.VIRTUAL,
       get() {
-        return `Este dispositivo cuenta con una capacidad de bateria de ${this.batteryCapacity} mAh, un tamaño de la pantalla de ${this.screenSize} pulgadas, una relsolucion de ${this.resolutionX} x ${this.resolutionY}, un procesador de ${this.processor}, una ram de ${this.ram}, un almacenamineto interno de ${this.internalStorage} MB, una camara Rear de ${this.rearCamera}, una camara frontal de ${this.frontCamera}, un sistema operativo de ${this.operatingSystem} y un numero de tarjetas Sims de ${this.numberOfSims}`;
+        return `Este dispositivo cuenta con una capacidad de bateria de ${this.batteryCapacity}, un tamano de la pantalla de ${this.screenSize}, una relsolucion X de ${this.resolutionX}, una relsolucion Y de ${this.resolutionY}, un procesador de ${this.processor}, una ram de ${this.ram}, un almacenamineto interno de ${this.internalStorage}, una camara Rear de ${this.rearCamera}, una camara frontal de ${this.frontCamera}, un sistema operativo de ${this.operatingSystem} y un numero de tarjetas Sims de ${this.numberOfSims}`;
       },
     },
   },
