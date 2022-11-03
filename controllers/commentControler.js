@@ -8,11 +8,12 @@ const getComment = (req, res, next) => {
 };
 
 const postComment = (req, res, next) => {
-  const { id } = req.params;
-  const { userId, commit, rating } = req.body;
+  const { productId } = req.params;
+  const { id } = req.user;
+  const { commit, rating } = req.body;
   Comment.create({
-    userId: userId,
-    productId: id,
+    userId: id,
+    productId: productId,
     commit: commit,
     rating: rating,
   })
