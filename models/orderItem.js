@@ -8,7 +8,7 @@ OrderItem.init(
       type: S.INTEGER,
       allowNull: false,
     },
-    idUser: {
+    userId: {
       type: S.INTEGER,
       allowNull: false,
     },
