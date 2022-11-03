@@ -21,7 +21,7 @@ const create = (req, res) => {
 const updateOne = (req, res) => {
   const id = req.params.id;
   Product.update(req.body, { where: { id }, returning: true })
-    .then(([afect, update]) => res.send(update[0]))
+    .then((productUpdate) => res.send(productUpdate))
     .catch();
 };
 const deleteOne = (req, res) => {
