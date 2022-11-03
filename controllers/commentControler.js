@@ -1,6 +1,6 @@
 const { Comment } = require("../models");
 const { Product } = require("../models");
-
+//rutas amigables agregadas
 const getComment = (req, res, next) => {
   const { name } = req.params;
   Product.findOne({ where: { url: name } })
