@@ -7,7 +7,7 @@ const getAll = (req, res) => {
 };
 
 const getOne = (req, res) => {
-  Product.findByPk(req.params.id)
+  Product.findOne({ where: { url: req.params.name } })
     .then((product) => res.send(product))
     .catch();
 };
@@ -19,15 +19,12 @@ const create = (req, res) => {
 };
 
 const updateOne = (req, res) => {
-  const id = req.params.id;
-  Product.update(req.body, { where: { id }, returning: true })
-    .then((productUpdate) => res.send(productUpdate))
+  Product.update(req.body, { where: { url: req.params.name }, returning: true })
+    .then(([afect, update]) => res.send(update[0]))
     .catch();
 };
 const deleteOne = (req, res) => {
-  const id = req.params.id;
-  console.log(req.params.id);
-  Product.destroy({ where: { id } })
+  Product.destroy({ where: { url: req.params.name } })
     .then(() => res.sendStatus(202))
     .catch();
 };

@@ -10,9 +10,9 @@ const {
 
 const router = express.Router();
 
-router.get("/:id", getOne);
-router.delete("/delete/:id", deleteOne);
-router.put("/update/:id", updateOne);
+router.get("/:name", getOne);
+router.delete("/delete/:name", deleteOne);
+router.put("/update/:name", updateOne);
 router.get("/", getAll);
 router.post("/add", create);
 
