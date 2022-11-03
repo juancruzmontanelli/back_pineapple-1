@@ -3,7 +3,7 @@ const express = require("express");
 const {
   getAll,
   getOne,
-  createOne,
+  create,
   updateOne,
   deleteOne,
 } = require("../controllers/productController");
@@ -14,6 +14,6 @@ router.get("/:id", getOne);
 router.delete("/delete/:id", deleteOne);
 router.put("/update/:id", updateOne);
 router.get("/", getAll);
-router.post("/add", createOne);
+router.post("/add", create);
 
 module.exports = router;

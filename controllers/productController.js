@@ -12,9 +12,9 @@ const Product = require('../models/product')
         .catch()
     })
 
-    const createOne = ((req, res) => {
-        Product.create(req.body)
-        .then((product) => res.send(product))
+    const create = ((req, res) => {
+        Product.bulkCreate(req.body)
+        .then((products) => res.send(products))
         .catch()
     })
 
@@ -36,7 +36,7 @@ const Product = require('../models/product')
 module.exports = {
     getAll,
     getOne,
-    createOne,
+    create,
     updateOne,
     deleteOne
     

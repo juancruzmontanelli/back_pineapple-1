@@ -9,6 +9,6 @@ Brand.init({
         type: Sequelize.STRING,
         allowNull: false 
     }
-}, {sequelize: db, modelName: "product"})
+}, {sequelize: db, modelName: "brands"})
 
 module.exports = Brand;
