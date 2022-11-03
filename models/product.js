@@ -79,8 +79,10 @@ Product.init({
 }, {sequelize: db, modelName: "product"})
 
 // hooks
-Product.beforeCreate((product) => {
-    return product.name = `${product.brand} ${product.model}`
+Product.beforeBulkCreate((products) => {
+    products.map((product) => {
+        return product.name = `${product.brand} ${product.model}`
+    })
 })
 
 module.exports = Product
