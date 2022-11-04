@@ -5,9 +5,16 @@ const getComment = (req, res, next) => {
   const { name } = req.params;
   Product.findOne({ where: { url: name } })
     .then((product) =>
-      Comment.findAll({ where: { productId: product.id } }).then((comments) =>
-        res.send(comments)
-      )
+      Comment.findAll({ where: { productId: product.id } }).then((comments) => {
+        let suma = 0;
+        let promedio = 0;
+        comments.map((comment) => {
+          suma += comment.rating;
+          return comment;
+        });
+        promedio = (suma / comments.length).toFixed(2);
+        res.send({ comments, promedio });
+      })
     )
     .catch(next);
 };
