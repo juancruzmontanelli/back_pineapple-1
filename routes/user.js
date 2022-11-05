@@ -11,10 +11,14 @@ const {
   allUsers,
   deleteUser,
 } = require("../controllers/usercontroller");
-const { validateAuth, validateRegister } = require("../middlewares/auth");
+const {
+  validateAuth,
+  validateRegister,
+  validateLogin,
+} = require("../middlewares/auth");
 
 router.post("/register", validateRegister, userRegister);
-router.post("/login", userLogin);
+router.post("/login", validateLogin, userLogin);
 router.post("/logout", userLogout);
 router.post("/:id/update", userUpdate);
 

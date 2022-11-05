@@ -29,7 +29,7 @@ const validateRegister = [
     .custom((value) => {
       return Users.findOne({ where: { email: value } }).then((user) => {
         if (user) {
-          return Promise.reject("E-mail ya esta utilizado");
+          return Promise.reject("Este E-mail ya esta utilizado");
         }
       });
     }),
@@ -49,4 +49,23 @@ const validateRegister = [
     .withMessage("Debe contener minimo 6 caracteres"),
 ];
 
-module.exports = { validateAuth, validateRegister };
+const validateLogin = [
+  check("email")
+    .notEmpty()
+    .withMessage("Ingrese datos en el campo email")
+    .bail()
+    .normalizeEmail()
+    .isEmail()
+    .withMessage("Ingrese un correo valido")
+    .bail()
+    .custom((value) => {
+      return Users.findOne({ where: { email: value } }).then((user) => {
+        if (!user) {
+          return Promise.reject("Este E-mail no existe");
+        }
+      });
+    }),
+  check("pass").notEmpty().withMessage("Ingrese datos en el campo contraseña"),
+];
+
+module.exports = { validateAuth, validateRegister, validateLogin };
