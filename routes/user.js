@@ -11,9 +11,9 @@ const {
   allUsers,
   deleteUser,
 } = require("../controllers/usercontroller");
-const { validateAuth } = require("../middlewares/auth");
+const { validateAuth, validateRegister } = require("../middlewares/auth");
 
-router.post("/register", userRegister);
+router.post("/register", validateRegister, userRegister);
 router.post("/login", userLogin);
 router.post("/logout", userLogout);
 router.post("/:id/update", userUpdate);
