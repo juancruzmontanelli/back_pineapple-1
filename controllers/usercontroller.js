@@ -16,6 +16,10 @@ const userRegister = (req, res, next) => {
 };
 
 const userLogin = (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   userLoginQuery(req, res);
 };
 
