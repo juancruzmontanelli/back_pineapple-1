@@ -1,42 +1,26 @@
-const { Users } = require("../models");
-const { generateToken } = require("../config/tokens");
+const { validationResult } = require("express-validator");
+const {
+  userRegisterQuery,
+  userLoginQuery,
+  userUpdateQuery,
+  userAllQuery,
+  deleteUserQuery,
+} = require("../services/userServices");
 
 const userRegister = (req, res, next) => {
-  Users.create(req.body)
-    .then((result) => result)
-    .then(({ id, name, address, email }) =>
-      res.send({ id, name, address, email })
-    )
-    .catch(next);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  userRegisterQuery(req, res, next);
 };
 
 const userLogin = (req, res) => {
-  const { email, pass } = req.body;
-
-  Users.findOne({ where: { email } }).then((user) => {
-    if (!user) return res.sendStatus(401);
-    user.validatePassword(pass).then((isValid) => {
-      if (!isValid) return res.sendStatus(401);
-
-      const payload = {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        isAdmin: user.isAdmin,
-      };
-
-      const token = generateToken(payload);
-
-      res.cookie("token", token);
-
-      res.send(payload);
-    });
-  });
+  userLoginQuery(req, res);
 };
 
 const userLogout = (req, res) => {
   res.clearCookie("token");
-
   res.sendStatus(204);
 };
 
@@ -45,26 +29,15 @@ const userData = (req, res) => {
 };
 
 const userUpdate = (req, res, next) => {
-  const { id } = req.params;
-  Users.update(req.body, {
-    where: { id: id },
-    returning: true,
-  })
-    .then(([afect, update]) => res.send(update[0]))
-    .catch(next);
+  userUpdateQuery(req, res, next);
 };
 
 const allUsers = (req, res, next) => {
-  Users.findAll()
-    .then((users) => res.send(users))
-    .catch(next);
+  userAllQuery(req, res, next);
 };
 
 const deleteUser = (req, res, next) => {
-  const { id } = req.params;
-  Users.destroy({ where: { id: id } })
-    .then(() => res.sendStatus(204))
-    .catch(next);
+  deleteUserQuery(req, res, next);
 };
 
 module.exports = {
