@@ -1,5 +1,6 @@
 const { Sequelize, Model } = require("sequelize");
 const db = require("../config/db");
+const Brand = require("./Brand");
 
 class Product extends Model {}
 
@@ -17,7 +18,7 @@ Product.init(
       type: Sequelize.STRING,
     },
     img: {
-        type: Sequelize.STRING,
+      type: Sequelize.STRING,
     },
     brand: {
       type: Sequelize.STRING,
@@ -100,6 +101,12 @@ Product.beforeBulkCreate((products) => {
       .replace(/\W/g, ""));
 
     return url;
+  });
+});
+
+Product.beforeBulkCreate((products) => {
+  products.map((product) => {
+    Brand.findOrCreate({ where: { name: product.brand } });
   });
 });
 
