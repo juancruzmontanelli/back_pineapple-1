@@ -62,8 +62,8 @@ const addMultiProduct = (req, res, next) => {
 };
 
 const editProduct = (req, res, next) => {
-  const { id } =req.params
-  const{ quantity } = req.body;
+  const { id } = req.params;
+  const { quantity } = req.body;
   CartItem.update({ quantity: quantity }, { where: { id: id } })
     .then(() => res.send(201))
     .catch(next);
@@ -131,7 +131,6 @@ module.exports = {
   deleteCart,
   editProduct,
   buyProducts,
-  cartAll,
   cartStory,
   addMultiProduct,
 };
