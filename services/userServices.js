@@ -22,6 +22,7 @@ const userLoginQuery = (req, res) => {
         id: user.id,
         email: user.email,
         name: user.name,
+        address: user.address,
         isAdmin: user.isAdmin,
       };
 
@@ -45,7 +46,8 @@ const userUpdateQuery = (req, res, next) => {
 };
 
 const userAllQuery = (req, res, next) => {
-  Users.findAll()
+  let attributes = ["id", "name", "address", "email", "isAdmin"];
+  Users.findAll({ attributes: attributes })
     .then((users) => res.send(users))
     .catch(next);
 };

@@ -1,4 +1,5 @@
 const { Users, OrderItem, Product, CartItem } = require("../models");
+const { Op } = require("sequelize");
 const nodemailer = require("nodemailer");
 /* Para hacer con bulkcreate tienes que pasar un array de objetos
 1.- Desde el front cuando esta deslogueado guarda en localstorage un array de objetos
@@ -23,6 +24,40 @@ const addProduct = (req, res, next) => {
         }).then((cart) => res.send(cart));
       })
     )
+    .catch(next);
+};
+
+const addMultiProduct = (req, res, next) => {
+  const userId = req.user.id;
+  const { products } = req.body;
+  Users.findOne({ where: { id: userId } })
+    .then((user) =>
+      products.map((product) => {
+        Product.findOne({ where: { id: product.productId } }).then(
+          (productDb) => {
+            CartItem.findOne({
+              where: {
+                [Op.and]: [{ userId: user.id }, { productId: productDb.id }],
+              },
+            }).then((productDbCart) => {
+              if (productDbCart) {
+                CartItem.update(
+                  { quantity: product.quantity + productDbCart.quantity },
+                  { where: { id: productDbCart.id }, returning: true }
+                ).then(([afect, update]) => console.log(update[0]));
+              } else {
+                CartItem.create({
+                  productId: productDb.id,
+                  userId: user.id,
+                  quantity: product.quantity,
+                }).then((cart) => console.log(cart));
+              }
+            });
+          }
+        );
+      })
+    )
+    .then(res.send(200))
     .catch(next);
 };
 
@@ -83,19 +118,19 @@ const buyProducts = (req, res, next) => {
     .catch(next);
 };
 
-const cartAll = (req, res, next) => {
-  const { id } = req.user;
-  CartItem.findAll({ where: { userId: id } })
-    .then((items) => res.status(200).send(items))
-    .catch(next);
-};
-
-const cartStory = (req,res,next) => {
+const cartStory = (req, res, next) => {
   const { id } = req.user;
   OrderItem.findAll({ where: { userId: id } })
     .then((items) => res.status(200).send(items))
     .catch(next);
+};
 
-}
-
-module.exports = { addProduct, deleteCart, editProduct, buyProducts, cartAll,cartStory };
+module.exports = {
+  addProduct,
+  deleteCart,
+  editProduct,
+  buyProducts,
+  cartAll,
+  cartStory,
+  addMultiProduct,
+};
