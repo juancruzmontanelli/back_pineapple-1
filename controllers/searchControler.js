@@ -2,7 +2,7 @@ const { Brand, Product } = require("../models");
 const { Op } = require("sequelize");
 
 const search = (req, res, next) => {
-  const { str } = req.params;
+  const str = req.params.str;
   Product.findAll({
     where: {
       name: {
