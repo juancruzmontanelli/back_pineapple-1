@@ -7,6 +7,7 @@ const {
   addProduct,
   buyProducts,
   cartAll,
+  cartStory
 } = require("../controllers/cartControler");
 
 // Ruta para agregar productos al carrito
@@ -21,5 +22,7 @@ router.delete("/:id", deleteCart);
 router.post("/buy", buyProducts);
 
 router.post("/items", cartAll);
+
+router.get("/items",cartStory)
 
 module.exports = router;

@@ -59,4 +59,12 @@ const cartAll = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { addProduct, deleteCart, editProduct, buyProducts, cartAll };
+const cartStory=(req,res,next)=>{
+  const { id } = req.user;
+  OrderItem.findAll({ where: { userId: id } })
+    .then((items) => res.status(200).send(items))
+    .catch(next);
+
+}
+
+module.exports = { addProduct, deleteCart, editProduct, buyProducts, cartAll,cartStory };
