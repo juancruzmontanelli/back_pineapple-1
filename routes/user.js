@@ -20,7 +20,7 @@ const {
 router.post("/register", validateRegister, userRegister);
 router.post("/login", validateLogin, userLogin);
 router.post("/logout", userLogout);
-router.post("/:id/update", userUpdate);
+router.put("/:id/update", userUpdate);
 
 router.get("/me", validateAuth, userData);
 router.get("/all", allUsers);

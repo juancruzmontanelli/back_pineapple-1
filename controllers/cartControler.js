@@ -26,14 +26,15 @@ const addProduct = (req, res, next) => {
 };
 
 const editProduct = (req, res, next) => {
-  const { id, quantity } = req.body;
+  const { id } =req.params
+  const{ quantity } = req.body;
   CartItem.update({ quantity: quantity }, { where: { id: id } })
     .then(() => res.send(201))
     .catch(next);
 };
 
 const deleteCart = (req, res, next) => {
-  const { id } = req.body;
+  const { id } = req.params;
   CartItem.destroy({ where: { id: id } })
     .then(() => res.send(200))
     .catch(next);
