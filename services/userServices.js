@@ -22,6 +22,7 @@ const userLoginQuery = (req, res) => {
         id: user.id,
         email: user.email,
         name: user.name,
+        address: user.address,
         isAdmin: user.isAdmin,
       };
 
@@ -34,7 +35,7 @@ const userLoginQuery = (req, res) => {
   });
 };
 
-const userUpdateQuery = (req, res) => {
+const userUpdateQuery = (req, res, next) => {
   const { id } = req.user;
   Users.update(req.body, {
     where: { id: id },
@@ -45,12 +46,20 @@ const userUpdateQuery = (req, res) => {
 };
 
 const userAllQuery = (req, res, next) => {
-  Users.findAll()
+  let attributes = ["id", "name", "address", "email", "isAdmin"];
+  Users.findAll({ attributes: attributes })
     .then((users) => res.send(users))
     .catch(next);
 };
 
 const deleteUserQuery = (req, res, next) => {
+  const { id } = req.user;
+  Users.destroy({ where: { id: id } })
+    .then(() => res.sendStatus(204))
+    .catch(next);
+};
+
+const deleteUserQueryAdmin = (req, res, next) => {
   const { id } = req.params;
   Users.destroy({ where: { id: id } })
     .then(() => res.sendStatus(204))
@@ -63,4 +72,5 @@ module.exports = {
   userUpdateQuery,
   userAllQuery,
   deleteUserQuery,
+  deleteUserQueryAdmin,
 };

@@ -10,21 +10,25 @@ const {
   userUpdate,
   allUsers,
   deleteUser,
+  deleteUserAdmin,
 } = require("../controllers/usercontroller");
 const {
   validateAuth,
   validateRegister,
   validateLogin,
+  validateUpdate,
+  validateAdmin,
 } = require("../middlewares/auth");
 
 router.post("/register", validateRegister, userRegister);
 router.post("/login", validateLogin, userLogin);
 router.post("/logout", userLogout);
-router.put("/:id/update", userUpdate);
+router.put("/update", validateAuth, userUpdate);
 
 router.get("/me", validateAuth, userData);
-router.get("/all", allUsers);
+router.get("/all", validateAuth, validateAdmin, allUsers);
 
-router.delete("/:id/delete", deleteUser);
+router.delete("/:id/delete", validateAuth, validateAdmin, deleteUserAdmin);
+router.delete("/delete", validateAuth, deleteUser);
 
 module.exports = router;

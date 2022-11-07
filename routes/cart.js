@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 // const cart = require("../models/cart");
 const router = express.Router();
 const {
@@ -6,23 +7,26 @@ const {
   editProduct,
   addProduct,
   buyProducts,
-  cartAll,
-  cartStory
+  cartStory,
+  addMultiProduct,
 } = require("../controllers/cartControler");
 
+const { validateAuth } = require("../middlewares/auth");
+router.use(cookieParser());
+
 // Ruta para agregar productos al carrito
-router.post("/", addProduct);
+router.post("/", validateAuth, addProduct);
 
 // Ruta para editar la cantidad del producto
-router.put("/:id", editProduct);
+router.put("/:id", validateAuth, editProduct);
 
 //Ruta para eliminar productos al carrito
-router.delete("/:id", deleteCart);
+router.delete("/:id", validateAuth, deleteCart);
 
-router.post("/buy", buyProducts);
+router.post("/buy", validateAuth, buyProducts);
 
-router.post("/items", cartAll);
+router.get("/history", validateAuth, cartStory);
 
-router.get("/items",cartStory)
+router.post("/multiProducts", validateAuth, addMultiProduct);
 
 module.exports = router;
