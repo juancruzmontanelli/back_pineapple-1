@@ -5,6 +5,7 @@ const {
   userUpdateQuery,
   userAllQuery,
   deleteUserQuery,
+  deleteUserQueryAdmin,
 } = require("../services/userServices");
 
 const userRegister = (req, res, next) => {
@@ -33,15 +34,27 @@ const userData = (req, res) => {
 };
 
 const userUpdate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   userUpdateQuery(req, res, next);
 };
 
 const allUsers = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   userAllQuery(req, res, next);
 };
 
 const deleteUser = (req, res, next) => {
   deleteUserQuery(req, res, next);
+};
+
+const deleteUserAdmin = (req, res, next) => {
+  deleteUserQueryAdmin(req, res, next);
 };
 
 module.exports = {
@@ -52,4 +65,5 @@ module.exports = {
   userUpdate,
   allUsers,
   deleteUser,
+  deleteUserAdmin,
 };

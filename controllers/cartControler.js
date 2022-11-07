@@ -11,7 +11,8 @@ array.map( (item)  => return { productId: item.id, userId: userId, quantity: ite
 */
 
 const addProduct = (req, res, next) => {
-  const { id, quantity, userId } = req.body;
+  const userId = req.user.id;
+  const { id, quantity } = req.body;
   Users.findOne({ where: { id: userId } })
     .then((user) =>
       Product.findOne({ where: { id: id } }).then((product) => {
@@ -40,7 +41,7 @@ const deleteCart = (req, res, next) => {
 };
 
 const buyProducts = (req, res, next) => {
-  const { id } = req.body;
+  const { id } = req.user;
 
   const testAccount = nodemailer.createTestAccount();
 
@@ -83,7 +84,7 @@ const buyProducts = (req, res, next) => {
 };
 
 const cartAll = (req, res, next) => {
-  const { id } = req.body;
+  const { id } = req.user;
   CartItem.findAll({ where: { userId: id } })
     .then((items) => res.status(200).send(items))
     .catch(next);
