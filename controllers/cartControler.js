@@ -89,7 +89,7 @@ const cartAll = (req, res, next) => {
     .catch(next);
 };
 
-const cartStory=(req,res,next)=>{
+const cartStory = (req,res,next) => {
   const { id } = req.user;
   OrderItem.findAll({ where: { userId: id } })
     .then((items) => res.status(200).send(items))
