@@ -1,5 +1,5 @@
 const { Users, OrderItem, Product, CartItem } = require("../models");
-
+const nodemailer = require("nodemailer");
 /* Para hacer con bulkcreate tienes que pasar un array de objetos
 1.- Desde el front cuando esta deslogueado guarda en localstorage un array de objetos
 El array debe estar de la siguiente forma ejemplo: [{ id : 'product id', quantity : '1'}]
@@ -41,13 +41,43 @@ const deleteCart = (req, res, next) => {
 
 const buyProducts = (req, res, next) => {
   const { id } = req.body;
-  CartItem.findAll({ where: { userId: id } })
-    .then((items) => {
-      OrderItem.bulkCreate(items).then(() =>
-        CartItem.destroy({
-          where: { userId: id },
-        }).then(() => res.send(204))
-      );
+
+  const testAccount = nodemailer.createTestAccount();
+
+  let trasporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  });
+  Users.findOne({ where: { id: id } })
+    .then((user) => {
+      CartItem.findAll({ where: { userId: id } }).then((items) => {
+        const history = items.map((item) => {
+          const { productId, userId, quantity } = item;
+          return { productId, userId, quantity };
+        });
+        let sendInfo = {
+          from: "remitente",
+          to: user.email,
+          subject: "Compra realizada",
+          text: "su compra se realizo con exito",
+        };
+
+        OrderItem.bulkCreate(history).then(() =>
+          CartItem.destroy({
+            where: { userId: id },
+          }).then(() => {
+            trasporter.sendMail(sendInfo, (err, info) => {
+              err ? res.sendStatus(500) : console.log("enviado");
+            });
+            res.send(204);
+          })
+        );
+      });
     })
     .catch(next);
 };
