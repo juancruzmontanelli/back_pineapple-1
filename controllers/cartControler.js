@@ -33,31 +33,29 @@ const addMultiProduct = (req, res, next) => {
   Users.findOne({ where: { id: userId } })
     .then((user) =>
       products.map((product) => {
-        Product.findOne({ where: { id: product.productId } }).then(
-          (productDb) => {
-            CartItem.findOne({
-              where: {
-                [Op.and]: [{ userId: user.id }, { productId: productDb.id }],
-              },
-            }).then((productDbCart) => {
-              if (productDbCart) {
-                CartItem.update(
-                  { quantity: product.quantity + productDbCart.quantity },
-                  { where: { id: productDbCart.id }, returning: true }
-                ).then(([afect, update]) => console.log(update[0]));
-              } else {
-                CartItem.create({
-                  productId: productDb.id,
-                  userId: user.id,
-                  quantity: product.quantity,
-                }).then((cart) => console.log(cart));
-              }
-            });
-          }
-        );
+        Product.findOne({ where: { id: product.id } }).then((productDb) => {
+          CartItem.findOne({
+            where: {
+              [Op.and]: [{ userId: user.id }, { productId: productDb.id }],
+            },
+          }).then((productDbCart) => {
+            if (productDbCart) {
+              CartItem.update(
+                { quantity: product.quantity + productDbCart.quantity },
+                { where: { id: productDbCart.id }, returning: true }
+              ).then(([afect, update]) => console.log(update[0]));
+            } else {
+              CartItem.create({
+                productId: productDb.id,
+                userId: user.id,
+                quantity: product.quantity,
+              }).then((cart) => console.log(cart));
+            }
+          });
+        });
       })
     )
-    .then(res.send(200))
+    .then(res.sendStatus(200))
     .catch(next);
 };
 
