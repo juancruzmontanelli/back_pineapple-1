@@ -1,7 +1,7 @@
 const { check } = require("express-validator");
 const { validateToken } = require("../config/tokens");
-const { cookie } = require("express-validator");
 const { Users } = require("../models");
+const { Product } = require("../models");
 
 function validateAuth(req, res, next) {
   const token = req.cookies.token;
@@ -109,10 +109,25 @@ const validateAdmin = [
     .withMessage("No tiene autorizacion para ingresar a esta ruta"),
 ];
 
+const productRegister = [
+  check("model")
+    .notEmpty()
+    .withMessage("Ingrese datos en el campo modelo")
+    .bail()
+    .custom((value, { req }) => {
+      return roduct.findOne({ where: { model: value } }).then((product) => {
+        if (product) {
+          return Promise.reject("Este producto ya existe");
+        }
+      });
+    }),
+];
+
 module.exports = {
   validateAuth,
   validateRegister,
   validateLogin,
   validateUpdate,
   validateAdmin,
+  productRegister,
 };
