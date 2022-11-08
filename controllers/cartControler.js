@@ -62,14 +62,14 @@ const addMultiProduct = (req, res, next) => {
 const editProduct = (req, res, next) => {
   const { id } = req.params;
   const { quantity } = req.body;
-  CartItem.update({ quantity: quantity }, { where: { id: id } })
+  CartItem.update({ quantity: quantity }, { where: { productId: id } })
     .then(() => res.send(201))
     .catch(next);
 };
 
 const deleteCart = (req, res, next) => {
   const { id } = req.params;
-  CartItem.destroy({ where: { id: id } })
+  CartItem.destroy({ where: { productId: id } })
     .then(() => res.send(200))
     .catch(next);
 };
