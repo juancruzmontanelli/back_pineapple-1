@@ -8,6 +8,7 @@ const {
   deleteUserQueryAdmin,
 } = require("../services/userServices");
 const { CartItem } = require("../models");
+const { Product } = require("../models");
 
 const userRegister = (req, res, next) => {
   const errors = validationResult(req);
@@ -31,8 +32,12 @@ const userLogout = (req, res) => {
 };
 
 const userData = (req, res, next) => {
+  let attributes = ["id", "name", "img", "price"];
   const { id, email, name, address, isAdmin } = req.user;
-  CartItem.findAll({ where: { userId: id } })
+  CartItem.findAll({
+    where: { userId: id },
+    include: [{ model: Product, attributes: attributes }],
+  })
     .then((items) => res.send({ id, email, name, address, isAdmin, items }))
     .catch(next);
 };
