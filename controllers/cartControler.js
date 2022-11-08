@@ -28,6 +28,7 @@ const addProduct = (req, res, next) => {
 };
 
 const addMultiProduct = (req, res, next) => {
+  let attributes = ["id", "name", "img", "price"];
   const userId = req.user.id;
   const { products } = req.body;
   Promise.all(
@@ -55,7 +56,14 @@ const addMultiProduct = (req, res, next) => {
         }
       );
     })
-  ).then((response) => res.send(response));
+  )
+    .then(() =>
+      CartItem.findAll({
+        where: { userId: userId },
+        include: [{ model: Product, attributes: attributes }],
+      }).then((items) => res.send({ items }))
+    )
+    .catch(next);
 };
 
 const editProduct = (req, res, next) => {
