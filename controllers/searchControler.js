@@ -33,7 +33,7 @@ const filter = (req, res, next) => {
             { price: { [Op.between]: [min, max] } },
           ],
         };
-      if ((model = "1")) {
+      if (model == "1") {
         query = { price: { [Op.between]: [min, max] } };
       }
       Product.findAll({
