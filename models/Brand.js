@@ -7,7 +7,8 @@ class Brand extends Model {}
 Brand.init({
     name: {
         type: Sequelize.STRING,
-        allowNull: false 
+        allowNull: false,
+        unique: true
     }
 }, {sequelize: db, modelName: "brands"})
 
