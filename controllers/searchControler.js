@@ -19,13 +19,27 @@ const search = (req, res, next) => {
 };
 
 const filter = (req, res, next) => {
-  const { model, price } = req.query;
+  let { model, min, max } = req.query;
+  if (!model) model = "1";
+  if (!min) min = 0;
+  if (!max) max = 10000000;
   Brand.findOne({ where: { name: model } })
-    .then((brand) =>
+    .then((brand) => {
+      let query;
+      if (brand)
+        query = {
+          [Op.and]: [
+            { brand: brand.name },
+            { price: { [Op.between]: [min, max] } },
+          ],
+        };
+      if ((model = "1")) {
+        query = { price: { [Op.between]: [min, max] } };
+      }
       Product.findAll({
-        where: { brand: brand.id, price: { [Op.between]: price } },
-      }).then((products) => res.send(products))
-    )
+        where: query,
+      }).then((products) => res.send(products));
+    })
     .catch(next);
 };
 
