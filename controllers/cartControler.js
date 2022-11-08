@@ -30,33 +30,32 @@ const addProduct = (req, res, next) => {
 const addMultiProduct = (req, res, next) => {
   const userId = req.user.id;
   const { products } = req.body;
-  Users.findOne({ where: { id: userId } })
-    .then((user) =>
-      products.map((product) => {
-        Product.findOne({ where: { id: product.id } }).then((productDb) => {
-          CartItem.findOne({
+  Promise.all(
+    products.map((product) => {
+      return Product.findOne({ where: { id: product.id } }).then(
+        (productDb) => {
+          return CartItem.findOne({
             where: {
-              [Op.and]: [{ userId: user.id }, { productId: productDb.id }],
+              [Op.and]: [{ userId: userId }, { productId: productDb.id }],
             },
           }).then((productDbCart) => {
             if (productDbCart) {
-              CartItem.update(
+              return CartItem.update(
                 { quantity: product.quantity + productDbCart.quantity },
                 { where: { id: productDbCart.id }, returning: true }
-              ).then(([afect, update]) => console.log(update[0]));
+              ).then(([afect, update]) => update[0]);
             } else {
-              CartItem.create({
+              return CartItem.create({
                 productId: productDb.id,
-                userId: user.id,
+                userId: userId,
                 quantity: product.quantity,
-              }).then((cart) => console.log(cart));
+              });
             }
           });
-        });
-      })
-    )
-    .then(res.sendStatus(200))
-    .catch(next);
+        }
+      );
+    })
+  ).then((response) => res.send(response));
 };
 
 const editProduct = (req, res, next) => {
