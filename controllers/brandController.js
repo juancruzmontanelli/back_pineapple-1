@@ -1,40 +1,54 @@
 const Brand = require("../models/Brand");
-const Product = require('../models/product')
-
+const Product = require("../models/product");
 
 const getAll = (req, res) => {
-    Brand.findAll()
-      .then((brands) => res.send(brands))
-      .catch();
-  };
-  
-const create = (req, res) => {
-    Brand.bulkCreate(req.body)
+  Brand.findAll()
     .then((brands) => res.send(brands))
-}
+    .catch();
+};
+
+const create = (req, res) => {
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  Brand.bulkCreate(req.body).then((brands) => res.send(brands));
+};
 
 const updateOne = (req, res) => {
-    
-    Brand.update(req.body, {where: {name: req.params.name }, returning: true})
-    .then(([afect, updateName]) => { 
-        Product.update({brand: req.body.name}, {where: {brand: req.params.name }, individualHooks: true, returning: true})
-    .then(([afect, updateBrand]) => res.send({updateName :updateName[0], updateBrand: updateBrand[0]}))
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  Brand.update(req.body, { where: { name: req.params.name }, returning: true })
+    .then(([afect, updateName]) => {
+      Product.update(
+        { brand: req.body.name },
+        {
+          where: { brand: req.params.name },
+          individualHooks: true,
+          returning: true,
+        }
+      ).then(([afect, updateBrand]) =>
+        res.send({ updateName: updateName[0], updateBrand: updateBrand[0] })
+      );
     })
     .catch();
-}
+};
 
 const deleteOne = (req, res) => {
-    Brand.destroy({where: {name: req.params.name}})
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  Brand.destroy({ where: { name: req.params.name } })
     .then(() => {
-        Product.destroy({where: {brand: req.params.name}})
-        .then(() => res.sendStatus(202))
+      Product.destroy({ where: { brand: req.params.name } }).then(() =>
+        res.sendStatus(202)
+      );
     })
     .catch();
-}
+};
 module.exports = {
-    getAll,
-    create,
-    updateOne,
-    deleteOne,
-  };
-  
+  getAll,
+  create,
+  updateOne,
+  deleteOne,
+};

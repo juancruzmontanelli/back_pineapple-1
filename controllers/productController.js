@@ -24,17 +24,26 @@ const getOne = (req, res) => {
 };
 
 const create = (req, res) => {
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   Product.bulkCreate(req.body)
     .then((products) => res.send(products))
     .catch();
 };
 
 const updateOne = (req, res) => {
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   Product.update(req.body, { where: { url: req.params.name }, returning: true })
     .then(([afect, update]) => res.send(update[0]))
     .catch();
 };
 const deleteOne = (req, res) => {
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   Product.destroy({ where: { url: req.params.name } })
     .then(() => res.sendStatus(202))
     .catch();
