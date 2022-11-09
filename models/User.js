@@ -59,4 +59,15 @@ Users.beforeCreate((user) => {
   });
 });
 
+Users.beforeUpdate((user) => {
+  console.log(user);
+  if (user.pass) {
+    const salt = bcrypt.genSaltSync();
+    user.salt = salt;
+    return bcrypt.hash(user.pass, salt).then((hash) => {
+      user.pass = hash;
+    });
+  }
+});
+
 module.exports = Users;

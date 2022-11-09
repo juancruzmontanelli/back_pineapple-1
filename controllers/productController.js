@@ -1,22 +1,29 @@
 const Product = require("../models/product");
+const { Comment } = require("../models/");
+const getPromedio = require("../utils/index");
 
 const getAll = (req, res) => {
-  Product.findAll()
-    .then((products) => res.send(products))
+  Product.findAll({ include: [Comment] })
+    .then((products) => {
+      let productsAndComments = products.map((product) => {
+        product.setDataValue("promedio", getPromedio(product));
+        return product;
+      });
+      res.send(productsAndComments);
+    })
     .catch();
 };
 
 const getOne = (req, res) => {
-  Product.findOne({ where: { url: req.params.name } })
-    .then((product) => res.send(product))
+  Product.findOne({ where: { url: req.params.name }, include: [Comment] })
+    .then((product) => {
+      product.setDataValue("promedio", getPromedio(product));
+      res.send(product);
+    })
     .catch();
 };
 
 const create = (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
   Product.bulkCreate(req.body)
     .then((products) => res.send(products))
     .catch();
