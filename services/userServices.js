@@ -53,7 +53,13 @@ const userUpdateQuery = (req, res, next) => {
 const userAllQuery = (req, res, next) => {
   let attributes = ["id", "name", "address", "email", "isAdmin", "SuperAdmin"];
   Users.findAll({ attributes: attributes })
-    .then((users) => res.send(users))
+    .then((users) => {
+      let arrUsers = []
+      users.map((user) => {
+      if(user.id != req.user.id) arrUsers.push(user)
+      })
+      res.send(arrUsers)
+    })
     .catch(next);
 };
 
