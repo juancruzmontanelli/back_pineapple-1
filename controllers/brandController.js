@@ -10,7 +10,7 @@ const updateOne = (req, res) => {
     
     Brand.update(req.body, {where: {name: req.params.name }, returning: true})
     .then(([afect, updateName]) => { 
-        Product.update({brand: req.body.name}, {where: {brand: req.params.name }, returning: true})
+        Product.update({brand: req.body.name}, {where: {brand: req.params.name }, individualHooks: true, returning: true})
     .then(([afect, updateBrand]) => res.send({updateName :updateName[0], updateBrand: updateBrand[0]}))
     })
     .catch();

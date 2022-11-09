@@ -1,5 +1,6 @@
 const { Sequelize, Model } = require("sequelize");
 const db = require("../config/db");
+const { beforeUpdate } = require("./Brand");
 const Brand = require("./Brand");
 
 class Product extends Model {}
@@ -83,6 +84,7 @@ Product.init(
 
 // hooks
 Product.beforeBulkCreate((products) => {
+  console.log(products)
   products.map((product) => {
     const name = (product.name = `${product.brand} ${product.model}`);
 
@@ -105,4 +107,20 @@ Product.beforeBulkCreate((products) => {
   });
 });
 
+// Product.beforeBulkUpdate((...product) => {
+//   console.log(...product)
+//   const  name = (product.name = `${product.brand} ${product.model}`);
+//   return name
+// })
+
+// Product.afterUpdate((product) => {
+//   console.log(product)
+//   this.name =`${product.brand} ${product.model}`
+// })
+
+// Product.beforeBulkUpdate((products) => {
+//   products.map((product) => {
+//     Brand.update({ where: { name: product.brand } });
+//   });
+// });
 module.exports = Product;
