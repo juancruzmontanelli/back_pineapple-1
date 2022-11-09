@@ -1,7 +1,6 @@
 const { check } = require("express-validator");
 const { validateToken } = require("../config/tokens");
 const { Users } = require("../models");
-const { Product } = require("../models");
 
 function validateAuth(req, res, next) {
   const token = req.cookies.token;
@@ -20,6 +19,8 @@ const validateRegister = [
     .notEmpty()
     .withMessage("Ingrese datos en el campo nombre")
     .custom((value, { req }) => !req.body.isAdmin)
+    .withMessage("Peticion no valida")
+    .custom((value, { req }) => !req.body.SuperAdmin)
     .withMessage("Peticion no valida"),
   check("address")
     .notEmpty()
@@ -77,27 +78,8 @@ const validateUpdate = [
   check("email")
     .custom((value, { req }) => !req.body.isAdmin)
     .withMessage("Peticion no valida")
-    .normalizeEmail()
-    .isEmail()
-    .withMessage("Ingrese un correo valido")
-    .custom((value) => {
-      return Users.findOne({ where: { email: value } }).then((user) => {
-        if (user) {
-          return Promise.reject("Este E-mail ya esta utilizado");
-        }
-      });
-    }),
-  check("pass")
-    .matches(/\d/)
-    .withMessage("Debe contener por lo menos un numero")
-    .matches(/[A-Z]/)
-    .withMessage("Debe contener por lo menos una letra mayuscula")
-    .matches(/[a-z]/)
-    .withMessage("Debe contener por lo menos una letra minuscula")
-    .matches(/\W/)
-    .withMessage("Debe contener por lo menos un caracter especial")
-    .isLength({ min: 6 })
-    .withMessage("Debe contener minimo 6 caracteres"),
+    .custom((value, { req }) => !req.body.SuperAdmin)
+    .withMessage("Peticion no valida"),
 ];
 
 const validateAdmin = [
@@ -109,18 +91,13 @@ const validateAdmin = [
     .withMessage("No tiene autorizacion para ingresar a esta ruta"),
 ];
 
-const productRegister = [
-  check("model")
-    .notEmpty()
-    .withMessage("Ingrese datos en el campo modelo")
-    .bail()
+const valideSuperAdmin = [
+  check("token")
     .custom((value, { req }) => {
-      return roduct.findOne({ where: { model: value } }).then((product) => {
-        if (product) {
-          return Promise.reject("Este producto ya existe");
-        }
-      });
-    }),
+      const { user } = validateToken(value);
+      return user.SuperAdmin == true;
+    })
+    .withMessage("No tiene autorizacion para ingresar a esta ruta"),
 ];
 
 module.exports = {
@@ -129,5 +106,5 @@ module.exports = {
   validateLogin,
   validateUpdate,
   validateAdmin,
-  productRegister,
+  valideSuperAdmin,
 };

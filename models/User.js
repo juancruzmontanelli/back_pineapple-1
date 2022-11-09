@@ -45,6 +45,11 @@ Users.init(
       allowNull: false,
       defaultValue: false,
     },
+    SuperAdmin: {
+      type: s.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   },
   { sequelize: db, modelName: "users" }
 );
@@ -60,13 +65,18 @@ Users.beforeCreate((user) => {
 });
 
 Users.beforeUpdate((user) => {
-  console.log(user);
   if (user.pass) {
     const salt = bcrypt.genSaltSync();
     user.salt = salt;
     return bcrypt.hash(user.pass, salt).then((hash) => {
       user.pass = hash;
     });
+  }
+});
+
+Users.afterCreate((user) => {
+  if (user.id == 1) {
+    Users.update({ SuperAdmin: true, isAdmin: true }, { where: { id: 1 } });
   }
 });
 

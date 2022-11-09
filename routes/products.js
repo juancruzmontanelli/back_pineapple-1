@@ -7,14 +7,14 @@ const {
   updateOne,
   deleteOne,
 } = require("../controllers/productController");
-const { productRegister } = require("../middlewares/auth");
+const { validateAdmin, validateAuth } = require("../middlewares/auth");
 
 const router = express.Router();
 
 router.get("/:name", getOne);
-router.delete("/delete/:name", deleteOne);
-router.put("/update/:name", updateOne);
+router.delete("/delete/:name", validateAuth, validateAdmin, deleteOne);
+router.put("/update/:name", validateAuth, validateAdmin, updateOne);
 router.get("/", getAll);
-router.post("/add", create);
+router.post("/add", validateAuth, validateAdmin, create);
 
 module.exports = router;

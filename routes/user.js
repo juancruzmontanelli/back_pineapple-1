@@ -11,6 +11,8 @@ const {
   allUsers,
   deleteUser,
   deleteUserAdmin,
+  updateUserAdmin,
+  userPromoteAdmin,
 } = require("../controllers/usercontroller");
 const {
   validateAuth,
@@ -18,12 +20,16 @@ const {
   validateLogin,
   validateUpdate,
   validateAdmin,
+  valideSuperAdmin,
 } = require("../middlewares/auth");
 
 router.post("/register", validateRegister, userRegister);
 router.post("/login", validateLogin, userLogin);
 router.post("/logout", userLogout);
-router.put("/update", validateAuth, userUpdate);
+
+router.put("/update", validateAuth, validateUpdate, userUpdate);
+router.put("/admin/update", validateAuth, validateAdmin, updateUserAdmin);
+router.put("/promoteAdmin", validateAuth, valideSuperAdmin, userPromoteAdmin);
 
 router.get("/me", validateAuth, userData);
 router.get("/all", validateAuth, validateAdmin, allUsers);
