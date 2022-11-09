@@ -103,7 +103,7 @@ const valideSuperAdmin = [
 const validateBuy = [
   check("cardNumber")
     .notEmpty()
-    .withMessage("Ingrese datos en el campo contraseña")
+    .withMessage("Ingrese datos en el campo de la tarjeta")
     .bail()
     .isLength({ min: 13, max: 18 })
     .isNumeric()

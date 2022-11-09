@@ -5,15 +5,16 @@ class Order extends S.Model {}
 Order.init(
   {
     userId: {
-        type: S.INTEGER,
-        allowNull: false
-    }, 
+      type: S.INTEGER,
+      allowNull: false,
+    },
     total: {
-        type: S.FLOAT
-    }, 
+      type: S.FLOAT,
+    },
     status: {
-        type: S.STRING
-    }
+      type: S.STRING,
+      defaultValue: "Pendiente",
+    },
   },
   {
     sequelize: db,

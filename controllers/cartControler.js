@@ -1,4 +1,4 @@
-const { Users, OrderItem, Product, CartItem } = require("../models");
+const { Users, OrderItem, Product, CartItem, Order } = require("../models");
 const { Op } = require("sequelize");
 const nodemailer = require("nodemailer");
 /* Para hacer con bulkcreate tienes que pasar un array de objetos
@@ -98,27 +98,28 @@ const buyProducts = (req, res, next) => {
   Users.findOne({ where: { id: id } })
     .then((user) => {
       CartItem.findAll({ where: { userId: id } }).then((items) => {
-        const history = items.map((item) => {
-          const { productId, userId, quantity } = item;
-          return { productId, userId, quantity };
-        });
         let sendInfo = {
           from: "remitente",
           to: user.email,
           subject: "Compra realizada",
           text: "su compra se realizo con exito",
         };
-
-        OrderItem.bulkCreate(history).then(() =>
-          CartItem.destroy({
-            where: { userId: id },
-          }).then(() => {
-            trasporter.sendMail(sendInfo, (err, info) => {
-              err ? res.sendStatus(500) : console.log("enviado");
-            });
-            res.send(204);
-          })
-        );
+        Order.create({ userId: id }).then((order) => {
+          const history = items.map((item) => {
+            const { productId, userId, quantity } = item;
+            return { productId, userId, quantity, orderId: order.id };
+          });
+          OrderItem.bulkCreate(history).then(() =>
+            CartItem.destroy({
+              where: { userId: id },
+            }).then(() => {
+              // trasporter.sendMail(sendInfo, (err, info) => {
+              //   err ? res.sendStatus(500) : res.sendStatus(204);
+              // });
+              res.sendStatus(204);
+            })
+          );
+        });
       });
     })
     .catch(next);
