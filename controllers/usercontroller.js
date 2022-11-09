@@ -6,6 +6,8 @@ const {
   userAllQuery,
   deleteUserQuery,
   deleteUserQueryAdmin,
+  userAdminUpdateQuery,
+  userPromoteAdminQuery,
 } = require("../services/userServices");
 const { CartItem } = require("../models");
 const { Product } = require("../models");
@@ -66,6 +68,14 @@ const deleteUserAdmin = (req, res, next) => {
   deleteUserQueryAdmin(req, res, next);
 };
 
+const updateUserAdmin = (req, res, next) => {
+  userAdminUpdateQuery(req, res, next);
+};
+
+const userPromoteAdmin = (req, res, next) => {
+  userPromoteAdminQuery(req, res, next);
+};
+
 module.exports = {
   userRegister,
   userLogin,
@@ -75,4 +85,6 @@ module.exports = {
   allUsers,
   deleteUser,
   deleteUserAdmin,
+  updateUserAdmin,
+  userPromoteAdmin,
 };

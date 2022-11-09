@@ -24,7 +24,7 @@ const userLoginQuery = (req, res) => {
         name: user.name,
         address: user.address,
         isAdmin: user.isAdmin,
-        pass: user.pass,
+        SuperAdmin: user.SuperAdmin,
       };
 
       const token = generateToken(payload);
@@ -44,14 +44,14 @@ const userUpdateQuery = (req, res, next) => {
     returning: true,
   })
     .then(([afect, update]) => {
-      const { id, name, address, email, isAdmin, pass } = update[0];
-      res.send({ id, name, address, email, isAdmin, pass });
+      const { id, name, address, email, isAdmin, SuperAdmin } = update[0];
+      res.send({ id, name, address, email, isAdmin, SuperAdmin });
     })
     .catch(next);
 };
 
 const userAllQuery = (req, res, next) => {
-  let attributes = ["id", "name", "address", "email", "isAdmin"];
+  let attributes = ["id", "name", "address", "email", "isAdmin", "SuperAdmin"];
   Users.findAll({ attributes: attributes })
     .then((users) => res.send(users))
     .catch(next);
@@ -71,6 +71,38 @@ const deleteUserQueryAdmin = (req, res, next) => {
     .catch(next);
 };
 
+const userAdminUpdateQuery = (req, res, next) => {
+  const { id } = req.body;
+  Users.update(req.body, {
+    where: { id: id },
+    individualHooks: true,
+    returning: true,
+  })
+    .then(([afect, update]) => {
+      const { id, name, address, email, isAdmin, SuperAdmin } = update[0];
+      res.send({ id, name, address, email, isAdmin, SuperAdmin });
+    })
+    .catch(next);
+};
+
+const userPromoteAdminQuery = (req, res, next) => {
+  const { id, isAdmin } = req.body;
+  let revoque;
+  isAdmin ? (revoque = false) : (revoque = true);
+  Users.update(
+    { isAdmin: revoque },
+    {
+      where: { id: id },
+      returning: true,
+    }
+  )
+    .then(([afect, update]) => {
+      const { id, name, address, email, isAdmin } = update[0];
+      res.send({ id, name, address, email, isAdmin });
+    })
+    .catch(next);
+};
+
 module.exports = {
   userRegisterQuery,
   userLoginQuery,
@@ -78,4 +110,6 @@ module.exports = {
   userAllQuery,
   deleteUserQuery,
   deleteUserQueryAdmin,
+  userAdminUpdateQuery,
+  userPromoteAdminQuery,
 };
