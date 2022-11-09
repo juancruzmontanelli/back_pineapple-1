@@ -2,10 +2,12 @@ const getPromedio = (product) => {
   let suma = 0;
   let promedio = 0;
   product.comments.map((comment) => {
-    suma += comment.rating;
+    comment.rating ? (suma += comment.rating) : (suma = 0);
     return comment;
   });
-  promedio = (suma / product.comments.length).toFixed(2);
+  product.comments.length !== 0
+    ? (promedio = (suma / product.comments.length).toFixed(2))
+    : (promedio = 0);
   return promedio;
 };
 

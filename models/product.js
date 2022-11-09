@@ -84,7 +84,6 @@ Product.init(
 
 // hooks
 Product.beforeBulkCreate((products) => {
-  console.log(products)
   products.map((product) => {
     const name = (product.name = `${product.brand} ${product.model}`);
 
