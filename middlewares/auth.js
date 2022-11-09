@@ -1,6 +1,7 @@
 const { check } = require("express-validator");
 const { validateToken } = require("../config/tokens");
-const { Users } = require("../models");
+const { Users, Product, Comment } = require("../models");
+const { Op } = require("sequelize");
 
 function validateAuth(req, res, next) {
   const token = req.cookies.token;
@@ -124,6 +125,24 @@ const validateBuy = [
   check("cardName").notEmpty().withMessage("Ingrese datos en el campo nombre"),
 ];
 
+const validateComment = [
+  check("name").custom((value, { req }) =>
+    Product.findOne({ where: { url: value } }).then((product) =>
+      Comment.findOne({
+        where: {
+          [Op.and]: [{ userId: req.user.id }, { productId: product.id }],
+        },
+      }).then((comment) => {
+        if (comment) {
+          return Promise.reject(
+            "Usted ya a realizado una review en este producto"
+          );
+        }
+      })
+    )
+  ),
+];
+
 module.exports = {
   validateAuth,
   validateRegister,
@@ -132,4 +151,5 @@ module.exports = {
   validateAdmin,
   valideSuperAdmin,
   validateBuy,
+  validateComment,
 };
