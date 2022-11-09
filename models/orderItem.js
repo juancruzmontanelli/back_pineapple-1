@@ -16,6 +16,9 @@ OrderItem.init(
       type: S.INTEGER,
       allowNull: false,
     },
+    orderId: {
+      type: S.INTEGER
+    }
   },
 
   {

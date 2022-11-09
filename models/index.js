@@ -4,6 +4,7 @@ const OrderItem = require("./orderItem");
 const Product = require("./product");
 const Brand = require("./Brand");
 const Comment = require("./Comment");
+const Order = require("./Order")
 
 CartItem.belongsTo(Users);
 Product.hasMany(CartItem);
@@ -12,6 +13,9 @@ CartItem.belongsTo(Product);
 OrderItem.belongsTo(Users);
 Product.hasMany(OrderItem);
 OrderItem.belongsTo(Product);
+
+OrderItem.hasMany(Order)
+Order.belongsTo(OrderItem)
 
 // Product.belongsTo(Brand)
 // Brand.hasMany(Product)
