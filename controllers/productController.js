@@ -1,6 +1,7 @@
 const Product = require("../models/product");
 const { Comment } = require("../models/");
 const getPromedio = require("../utils/index");
+const { validationResult } = require("express-validator");
 
 const getAll = (req, res) => {
   Product.findAll({ include: [Comment] })
@@ -24,6 +25,7 @@ const getOne = (req, res) => {
 };
 
 const create = (req, res) => {
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -33,6 +35,7 @@ const create = (req, res) => {
 };
 
 const updateOne = (req, res) => {
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -41,6 +44,7 @@ const updateOne = (req, res) => {
     .catch();
 };
 const deleteOne = (req, res) => {
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }

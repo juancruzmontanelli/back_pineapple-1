@@ -1,5 +1,6 @@
 const Brand = require("../models/Brand");
 const Product = require("../models/product");
+const { validationResult } = require("express-validator");
 
 const getAll = (req, res) => {
   Brand.findAll()
@@ -8,6 +9,7 @@ const getAll = (req, res) => {
 };
 
 const create = (req, res) => {
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -15,6 +17,7 @@ const create = (req, res) => {
 };
 
 const updateOne = (req, res) => {
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
