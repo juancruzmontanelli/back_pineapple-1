@@ -1,6 +1,7 @@
 const express = require("express");
 
 const {
+    getAll,
     create,
     updateOne,
     deleteOne,
@@ -8,7 +9,7 @@ const {
 
 const router = express.Router();
 
-
+router.get("/", getAll);
 router.post('/add', create)
 
 router.put('/update/:name', updateOne)

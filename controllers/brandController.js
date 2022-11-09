@@ -1,6 +1,13 @@
 const Brand = require("../models/Brand");
 const Product = require('../models/product')
 
+
+const getAll = (req, res) => {
+    Brand.findAll()
+      .then((brands) => res.send(brands))
+      .catch();
+  };
+  
 const create = (req, res) => {
     Brand.bulkCreate(req.body)
     .then((brands) => res.send(brands))
@@ -25,6 +32,7 @@ const deleteOne = (req, res) => {
     .catch();
 }
 module.exports = {
+    getAll,
     create,
     updateOne,
     deleteOne,
