@@ -100,6 +100,30 @@ const valideSuperAdmin = [
     .withMessage("No tiene autorizacion para ingresar a esta ruta"),
 ];
 
+const validateBuy = [
+  check("cardNumber")
+    .notEmpty()
+    .withMessage("Ingrese datos en el campo contraseña")
+    .bail()
+    .isLength({ min: 13, max: 18 })
+    .isNumeric()
+    .withMessage("Ingrese una tarjeta valida"),
+  check("cardExpiration")
+    .notEmpty()
+    .withMessage("Ingrese datos en el campo de fecha de expiracion")
+    .bail()
+    .matches(/(0*[01-12]\d)([/])(0*[23-99]\d)/g)
+    .withMessage("Ingrese una fecha de expiracion valida"),
+  check("cardCode")
+    .notEmpty()
+    .withMessage("Ingrese datos en el campo codigo")
+    .bail()
+    .isLength({ min: 3, max: 3 })
+    .isNumeric()
+    .withMessage("Ingrese un codigo valido"),
+  check("cardName").notEmpty().withMessage("Ingrese datos en el campo nombre"),
+];
+
 module.exports = {
   validateAuth,
   validateRegister,
@@ -107,4 +131,5 @@ module.exports = {
   validateUpdate,
   validateAdmin,
   valideSuperAdmin,
+  validateBuy,
 };
