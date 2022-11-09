@@ -1,5 +1,6 @@
 const { Comment } = require("../models");
 const { Product } = require("../models");
+const { validationResult } = require("express-validator");
 //rutas amigables agregadas
 const getComment = (req, res, next) => {
   const { name } = req.params;
@@ -20,6 +21,10 @@ const getComment = (req, res, next) => {
 };
 
 const postComment = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const { name } = req.params;
   const { id } = req.user;
   const { commit, rating } = req.body;
