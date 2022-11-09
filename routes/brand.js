@@ -1,15 +1,15 @@
 const express = require("express");
-
 const {
   getAll,
   create,
   updateOne,
   deleteOne,
-} = require("../controllers/brandController");  
-
+} = require("../controllers/brandController");
 const { validateAuth, validateAdmin } = require("../middlewares/auth");
-
 const router = express.Router();
+const cookieParser = require("cookie-parser");
+router.use(cookieParser());
+
 router.get("/", getAll);
 
 router.post("/add", validateAuth, validateAdmin, create);
