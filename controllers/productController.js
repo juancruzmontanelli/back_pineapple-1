@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const { validationResult } = require('express-validator');
 
 const getAll = (req, res) => {
   Product.findAll()
@@ -13,10 +14,10 @@ const getOne = (req, res) => {
 };
 
 const create = (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).json({ errors: errors.array() });
+  // }
   Product.bulkCreate(req.body)
     .then((products) => res.send(products))
     .catch();
