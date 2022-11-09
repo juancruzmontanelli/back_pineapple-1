@@ -24,6 +24,7 @@ const userLoginQuery = (req, res) => {
         name: user.name,
         address: user.address,
         isAdmin: user.isAdmin,
+        pass: user.pass,
       };
 
       const token = generateToken(payload);
@@ -39,9 +40,13 @@ const userUpdateQuery = (req, res, next) => {
   const { id } = req.user;
   Users.update(req.body, {
     where: { id: id },
+    individualHooks: true,
     returning: true,
   })
-    .then(([afect, update]) => res.send(update[0]))
+    .then(([afect, update]) => {
+      const { id, name, address, email, isAdmin, pass } = update[0];
+      res.send({ id, name, address, email, isAdmin, pass });
+    })
     .catch(next);
 };
 

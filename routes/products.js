@@ -15,6 +15,6 @@ router.get("/:name", getOne);
 router.delete("/delete/:name", deleteOne);
 router.put("/update/:name", updateOne);
 router.get("/", getAll);
-router.post("/add", productRegister, create);
+router.post("/add", create);
 
 module.exports = router;
