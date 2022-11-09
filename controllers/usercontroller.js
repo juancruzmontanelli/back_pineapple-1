@@ -35,12 +35,14 @@ const userLogout = (req, res) => {
 
 const userData = (req, res, next) => {
   let attributes = ["id", "name", "img", "price"];
-  const { id, email, name, address, isAdmin } = req.user;
+  const { id, email, name, address, isAdmin, SuperAdmin } = req.user;
   CartItem.findAll({
     where: { userId: id },
     include: [{ model: Product, attributes: attributes }],
   })
-    .then((items) => res.send({ id, email, name, address, isAdmin, items }))
+    .then((items) =>
+      res.send({ id, email, name, address, isAdmin, SuperAdmin, items })
+    )
     .catch(next);
 };
 
