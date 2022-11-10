@@ -12,7 +12,7 @@ const {
   addMultiProduct,
 } = require("../controllers/cartControler");
 
-const { validateAuth } = require("../middlewares/auth");
+const { validateAuth, validateAdmin } = require("../middlewares/auth");
 router.use(cookieParser());
 
 // Ruta para agregar productos al carrito
@@ -28,7 +28,7 @@ router.post("/buy", validateAuth, buyProducts);
 
 router.get("/history", validateAuth, cartStory);
 
-router.put("/history/update/:id", validateAuth, cartStoryUpdate);
+router.put("/history/update/:id", validateAuth, validateAdmin, cartStoryUpdate);
 
 router.post("/multiProducts", validateAuth, addMultiProduct);
 
