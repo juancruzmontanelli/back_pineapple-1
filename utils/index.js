@@ -11,4 +11,11 @@ const getPromedio = (product) => {
   return promedio;
 };
 
-module.exports = getPromedio;
+const getPagingData = (data, page) => {
+  const { count: totalItems, rows: products } = data;
+  const currentPage = page ? page + 1 : 1;
+  const totalPages = Math.ceil(totalItems / 12);
+  return { totalItems, products, totalPages, currentPage };
+};
+
+module.exports = { getPromedio, getPagingData };

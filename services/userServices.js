@@ -37,6 +37,7 @@ const userLoginQuery = (req, res) => {
 };
 
 const userUpdateQuery = (req, res, next) => {
+  req.body.pass == "" ? delete req.body.pass : req.body.pass;
   const { id } = req.user;
   Users.update(req.body, {
     where: { id: id },
