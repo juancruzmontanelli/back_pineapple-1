@@ -1,4 +1,5 @@
 const { Users, OrderItem, Product, CartItem, Order } = require("../models");
+const { validationResult } = require("express-validator");
 const { Op } = require("sequelize");
 const nodemailer = require("nodemailer");
 /* Para hacer con bulkcreate tienes que pasar un array de objetos
@@ -147,10 +148,17 @@ const cartStory = (req, res, next) => {
 };
 
 const cartStoryUpdate = (req, res, next) => {
-  Order.update({status: req.body.status}, {where: { id: req.params.id }, returning: true })
-  .then(([afect, update]) => res.send(update[0]))
-  .catch(next);
-}
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  Order.update(
+    { status: req.body.status },
+    { where: { id: req.params.id }, returning: true }
+  )
+    .then(([afect, update]) => res.send(update[0]))
+    .catch(next);
+};
 
 module.exports = {
   addProduct,
