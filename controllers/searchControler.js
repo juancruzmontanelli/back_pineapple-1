@@ -31,7 +31,8 @@ const search = (req, res, next) => {
 };
 
 const filter = (req, res, next) => {
-  let { model, min, max } = req.query;
+  let { model, min, max, page } = req.query;
+  page >= 1 ? (page -= 1) : null;
   if (!model) model = "1";
   if (!min) min = 0;
   if (!max) max = 10000000;
@@ -48,9 +49,19 @@ const filter = (req, res, next) => {
       if (model == "1") {
         query = { price: { [Op.between]: [min, max] } };
       }
-      Product.findAll({
+      Product.findAndCountAll({
         where: query,
-      }).then((products) => res.send(products));
+        limit: 12,
+        offset: page ? page * 12 : 0,
+        include: [Comment],
+      }).then((products) => {
+        products.rows.map((product) => {
+          product.setDataValue("promedio", getPromedio(product));
+          return product;
+        });
+        const response = getPagingData(products, page);
+        res.send(response);
+      });
     })
     .catch(next);
 };
