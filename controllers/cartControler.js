@@ -97,41 +97,51 @@ const buyProducts = (req, res, next) => {
   });
   Users.findOne({ where: { id: id } })
     .then((user) => {
-      CartItem.findAll({ where: { userId: id }, include:[Product]}).then((items) => {
-        let productCard = ''
-        items.map((item) => {
-          productCard += `<h2>${item.product.name}</h2><img src="${item.product.img}"><p>$ ${item.product.price}</p>`
-        })
-        let sendInfo = {
-          from: "remitente",
-          to: "juancruzmontanelli@gmail.com",
-          subject: "Compra realizada",
-          html: `<body> <h1>Hola ${user.name}!</h1> <div>${productCard}</div> </body>`
-        };
-        Order.create({ userId: id}).then((order) => {
-          const history = items.map((item) => {
-            const { productId, userId, quantity } = item;
-            return { productId, userId, quantity, orderId: order.id };
+      CartItem.findAll({ where: { userId: id }, include: [Product] }).then(
+        (items) => {
+          let productCard = "";
+          items.map((item) => {
+            productCard += `<h2>${item.product.name}</h2><img src="${item.product.img}"><p>$ ${item.product.price}</p>`;
           });
-          OrderItem.bulkCreate(history).then(() =>
-            CartItem.destroy({
-              where: { userId: id },
-            }).then(() => {
-              trasporter.sendMail(sendInfo, (err, info) => {
-                err ? res.sendStatus(500) : res.send(sendInfo).status(204);
-              });
-             
-            })
-          );
-        });
-      });
+          let sendInfo = {
+            from: "remitente",
+            to: "juancruzmontanelli@gmail.com",
+            subject: "Compra realizada",
+            html: `<body> <h1>Hola ${user.name}!</h1> <div>${productCard}</div> </body>`,
+          };
+          Order.create({ userId: id }).then((order) => {
+            const history = items.map((item) => {
+              const { productId, userId, quantity } = item;
+              return { productId, userId, quantity, orderId: order.id };
+            });
+            OrderItem.bulkCreate(history).then(() =>
+              CartItem.destroy({
+                where: { userId: id },
+              }).then(() => {
+                trasporter.sendMail(sendInfo, (err, info) => {
+                  err ? res.sendStatus(500) : res.send(sendInfo).status(204);
+                });
+              })
+            );
+          });
+        }
+      );
     })
     .catch(next);
 };
 
 const cartStory = (req, res, next) => {
-  const { id } = req.user;
-  Order.findAll({ where: { userId: id }, include: [{model: OrderItem, include: [{model: Product}]}]})
+  const { id, isAdmin } = req.user;
+  let query = null;
+  isAdmin == true
+    ? (query = {
+        include: [{ model: OrderItem, include: [{ model: Product }] }],
+      })
+    : (query = {
+        where: { userId: id },
+        include: [{ model: OrderItem, include: [{ model: Product }] }],
+      });
+  Order.findAll(query)
     .then((items) => res.status(200).send(items))
     .catch(next);
 };
