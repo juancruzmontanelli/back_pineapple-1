@@ -8,6 +8,7 @@ const {
   addProduct,
   buyProducts,
   cartStory,
+  cartStoryUpdate,
   addMultiProduct,
 } = require("../controllers/cartControler");
 
@@ -26,6 +27,8 @@ router.delete("/:id", validateAuth, deleteCart);
 router.post("/buy", validateAuth, buyProducts);
 
 router.get("/history", validateAuth, cartStory);
+
+router.put("/history/update/:id", validateAuth, cartStoryUpdate);
 
 router.post("/multiProducts", validateAuth, addMultiProduct);
 

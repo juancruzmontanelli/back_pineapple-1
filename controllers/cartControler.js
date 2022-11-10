@@ -136,11 +136,18 @@ const cartStory = (req, res, next) => {
     .catch(next);
 };
 
+const cartStoryUpdate = (req, res, next) => {
+  Order.update({status: req.body.status}, {where: { id: req.params.id }, returning: true })
+  .then(([afect, update]) => res.send(update[0]))
+  .catch(next);
+}
+
 module.exports = {
   addProduct,
   deleteCart,
   editProduct,
   buyProducts,
   cartStory,
+  cartStoryUpdate,
   addMultiProduct,
 };
