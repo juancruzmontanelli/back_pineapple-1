@@ -1,5 +1,6 @@
 const { Users } = require("../models");
 const { generateToken } = require("../config/tokens");
+const { Op } = require("sequelize");
 
 const userRegisterQuery = (req, res, next) => {
   Users.create(req.body)
@@ -53,13 +54,12 @@ const userUpdateQuery = (req, res, next) => {
 
 const userAllQuery = (req, res, next) => {
   let attributes = ["id", "name", "address", "email", "isAdmin", "SuperAdmin"];
-  Users.findAll({ attributes: attributes })
+  Users.findAll({
+    where: { [Op.and]: [{ id: { [Op.ne]: 1 } }, {id: {[Op.ne]: req.user.id}}] },
+    attributes: attributes,
+  })
     .then((users) => {
-      let arrUsers = []
-      users.map((user) => {
-      if(user.id != req.user.id) arrUsers.push(user)
-      })
-      res.send(arrUsers)
+      res.send(users);
     })
     .catch(next);
 };

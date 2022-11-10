@@ -87,22 +87,26 @@ const buyProducts = (req, res, next) => {
   const testAccount = nodemailer.createTestAccount();
 
   let trasporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false,
+    host: "smtp.ethereal.email", // sntp.gmail.com : si usamos gmail
+    port: 587, // si usamos gmail esto tiene que ser 465
+    secure: false, // si usamos gmail esto tiene que ser true
     auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
+      user: "	lonie81@ethereal.email",
+      pass: "E3v2XqwukaBseZbXNH",
     },
   });
   Users.findOne({ where: { id: id } })
     .then((user) => {
-      CartItem.findAll({ where: { userId: id } }).then((items) => {
+      CartItem.findAll({ where: { userId: id }, include:[Product]}).then((items) => {
+        let productCard = ''
+        items.map((item) => {
+          productCard += `<h2>${item.product.name}</h2><img src="${item.product.img}"><p>$ ${item.product.price}</p>`
+        })
         let sendInfo = {
           from: "remitente",
-          to: user.email,
+          to: "juancruzmontanelli@gmail.com",
           subject: "Compra realizada",
-          text: "su compra se realizo con exito",
+          html: `<body> <h1>Hola ${user.name}!</h1> <div>${productCard}</div> </body>`
         };
         Order.create({ userId: id }).then((order) => {
           const history = items.map((item) => {
@@ -113,10 +117,10 @@ const buyProducts = (req, res, next) => {
             CartItem.destroy({
               where: { userId: id },
             }).then(() => {
-              // trasporter.sendMail(sendInfo, (err, info) => {
-              //   err ? res.sendStatus(500) : res.sendStatus(204);
-              // });
-              res.sendStatus(204);
+              trasporter.sendMail(sendInfo, (err, info) => {
+                err ? res.sendStatus(500) : res.send(sendInfo).status(204);
+              });
+             
             })
           );
         });
