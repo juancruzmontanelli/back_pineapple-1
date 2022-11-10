@@ -108,7 +108,7 @@ const buyProducts = (req, res, next) => {
           subject: "Compra realizada",
           html: `<body> <h1>Hola ${user.name}!</h1> <div>${productCard}</div> </body>`
         };
-        Order.create({ userId: id }).then((order) => {
+        Order.create({ userId: id}).then((order) => {
           const history = items.map((item) => {
             const { productId, userId, quantity } = item;
             return { productId, userId, quantity, orderId: order.id };
@@ -131,7 +131,7 @@ const buyProducts = (req, res, next) => {
 
 const cartStory = (req, res, next) => {
   const { id } = req.user;
-  OrderItem.findAll({ where: { userId: id } })
+  Order.findAll({ where: { userId: id }, include: [{model: OrderItem, include: [{model: Product}]}]})
     .then((items) => res.status(200).send(items))
     .catch(next);
 };
