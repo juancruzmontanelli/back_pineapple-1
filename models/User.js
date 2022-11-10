@@ -1,4 +1,4 @@
-  const s = require("sequelize");
+const s = require("sequelize");
 const db = require("../config/db");
 const bcrypt = require("bcrypt");
 class Users extends s.Model {
@@ -65,13 +65,16 @@ Users.beforeCreate((user) => {
 });
 
 Users.beforeUpdate((user) => {
-  if (user.pass) {
-    const salt = bcrypt.genSaltSync();
-    user.salt = salt;
-    return bcrypt.hash(user.pass, salt).then((hash) => {
-      user.pass = hash;
-    });
-  }
+  Users.findOne({ where: { id: user.id } }).then((userOld) => {
+    if (user.pass !== userOld.pass) {
+      console.log(user.pass);
+      const salt = bcrypt.genSaltSync();
+      user.salt = salt;
+      return bcrypt.hash(user.pass, salt).then((hash) => {
+        user.pass = hash;
+      });
+    }
+  });
 });
 
 Users.afterCreate((user) => {

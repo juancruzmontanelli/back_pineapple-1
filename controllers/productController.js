@@ -1,18 +1,25 @@
 const Product = require("../models/product");
 const { Comment } = require("../models/");
-const getPromedio = require("../utils/index");
+const { getPromedio, getPagingData } = require("../utils/index");
 const { validationResult } = require("express-validator");
 
-const getAll = (req, res) => {
-  Product.findAll({ include: [Comment] })
+const getAll = (req, res, next) => {
+  let { page } = req.query;
+  page >= 1 ? (page -= 1) : null;
+  Product.findAndCountAll({
+    limit: 12,
+    offset: page ? page * 12 : 0,
+    include: [Comment],
+  })
     .then((products) => {
-      let productsAndComments = products.map((product) => {
+      products.rows.map((product) => {
         product.setDataValue("promedio", getPromedio(product));
         return product;
       });
-      res.send(productsAndComments);
+      const response = getPagingData(products, page);
+      res.send(response);
     })
-    .catch();
+    .catch(next);
 };
 
 const getOne = (req, res) => {

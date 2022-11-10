@@ -1,11 +1,13 @@
-const { Brand, Product } = require("../models");
+const { Brand, Product, Comment } = require("../models");
 const { Op } = require("sequelize");
 const sequelize = require("sequelize");
+const { getPromedio, getPagingData } = require("../utils/index");
 
 const search = (req, res, next) => {
-  let str = req.query.str;
+  let { page, str } = req.query;
+  page >= 1 ? (page -= 1) : null;
   str.toLowerCase();
-  Product.findAll({
+  Product.findAndCountAll({
     where: {
       name: sequelize.where(
         sequelize.fn("LOWER", sequelize.col("name")),
@@ -13,8 +15,18 @@ const search = (req, res, next) => {
         "%" + str + "%"
       ),
     },
+    limit: 12,
+    offset: page ? page * 12 : 0,
+    include: [Comment],
   })
-    .then((products) => res.send(products))
+    .then((products) => {
+      products.rows.map((product) => {
+        product.setDataValue("promedio", getPromedio(product));
+        return product;
+      });
+      const response = getPagingData(products, page);
+      res.send(response);
+    })
     .catch(next);
 };
 
