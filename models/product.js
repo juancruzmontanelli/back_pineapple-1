@@ -106,20 +106,5 @@ Product.beforeBulkCreate((products) => {
   });
 });
 
-// Product.beforeBulkUpdate((...product) => {
-//   console.log(...product)
-//   const  name = (product.name = `${product.brand} ${product.model}`);
-//   return name
-// })
 
-// Product.afterUpdate((product) => {
-//   console.log(product)
-//   this.name =`${product.brand} ${product.model}`
-// })
-
-// Product.beforeBulkUpdate((products) => {
-//   products.map((product) => {
-//     Brand.update({ where: { name: product.brand } });
-//   });
-// });
 module.exports = Product;
