@@ -19,23 +19,33 @@ const create = (req, res) => {
 const updateOne = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ errors: errors.array() }); 
   }
-  Brand.update(req.body, { where: { name: req.params.name }, returning: true })
-    .then(([afect, updateName]) => {
-      Product.update(
-        { brand: req.body.name },
-        {
-          where: { brand: req.params.name },
-          individualHooks: true,
-          returning: true,
-        }
-      ).then(([afect, updateBrand]) =>
-        res.send({ updateName: updateName[0], updateBrand: updateBrand[0] })
-      );
-    })
-    .catch();
-};
+  Brand.update(req.body, {where: {name: req.params.name }, returning: true})
+  .then(([afect, updateName]) => {
+    Product.findAll({where: {brand: req.params.name }})
+  
+    .then((products) => {
+      let update = {
+        brand : req.body.name
+      }
+      products.map((product) => {
+        const name = `${req.body.name} ${product.model}`
+        const url = (name
+          .replace(/\s+/g, "_")
+          .replace(/\W/g, ""));
+         
+          update.name = name
+          update.url = url
+          console.log(name)
+          Product.update(update, {where: {id: product.id}, returning: true, individualHooks:true})
+          .then(([afect, updateBrand]) => res.send(updateBrand))
+      })
+    
+      }) 
+  })
+  
+}
 
 const deleteOne = (req, res) => {
   const errors = validationResult(req);
