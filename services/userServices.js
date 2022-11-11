@@ -70,7 +70,10 @@ const userAllQuery = (req, res, next) => {
 const deleteUserQuery = (req, res, next) => {
   const { id } = req.user;
   Users.destroy({ where: { id: id } })
-    .then(() => res.sendStatus(204))
+    .then(() => {
+      res.clearCookie("token");
+      res.sendStatus(204);
+    })
     .catch(next);
 };
 
