@@ -71,7 +71,7 @@ const editProduct = (req, res, next) => {
   const { id } = req.params;
   const { quantity } = req.body;
   CartItem.update({ quantity: quantity }, { where: { productId: id } })
-    .then(() => res.send(201))
+    .then(() => res.sendStatus(201))
     .catch(next);
 };
 

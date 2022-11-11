@@ -15,8 +15,8 @@ const search = (req, res, next) => {
         "%" + str + "%"
       ),
     },
-    limit: 12,
-    offset: page ? page * 12 : 0,
+    limit: 8,
+    offset: page ? page * 8 : 0,
     include: [Comment],
   })
     .then((products) => {
@@ -51,8 +51,8 @@ const filter = (req, res, next) => {
       }
       Product.findAndCountAll({
         where: query,
-        limit: 12,
-        offset: page ? page * 12 : 0,
+        limit: 8,
+        offset: page ? page * 8 : 0,
         include: [Comment],
       }).then((products) => {
         products.rows.map((product) => {

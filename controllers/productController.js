@@ -7,8 +7,8 @@ const getAll = (req, res, next) => {
   let { page } = req.query;
   page >= 1 ? (page -= 1) : null;
   Product.findAndCountAll({
-    limit: 12,
-    offset: page ? page * 12 : 0,
+    limit: 8,
+    offset: page ? page * 8 : 0,
     include: [Comment],
   })
     .then((products) => {

@@ -55,8 +55,11 @@ const userUpdateQuery = (req, res, next) => {
 const userAllQuery = (req, res, next) => {
   let attributes = ["id", "name", "address", "email", "isAdmin", "SuperAdmin"];
   Users.findAll({
-    where: { [Op.and]: [{ id: { [Op.ne]: 1 } }, {id: {[Op.ne]: req.user.id}}] },
+    where: {
+      [Op.and]: [{ id: { [Op.ne]: 1 } }, { id: { [Op.ne]: req.user.id } }],
+    },
     attributes: attributes,
+    order: [["id", "ASC"]],
   })
     .then((users) => {
       res.send(users);

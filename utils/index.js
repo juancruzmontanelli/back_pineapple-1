@@ -14,7 +14,7 @@ const getPromedio = (product) => {
 const getPagingData = (data, page) => {
   const { count: totalItems, rows: products } = data;
   const currentPage = page ? page + 1 : 1;
-  const totalPages = Math.ceil(totalItems / 12);
+  const totalPages = Math.ceil(totalItems / 8);
   return { totalItems, products, totalPages, currentPage };
 };
 
