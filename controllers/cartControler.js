@@ -92,8 +92,10 @@ const buyProducts = (req, res, next) => {
     port: 587, // si usamos gmail esto tiene que ser 465
     secure: false, // si usamos gmail esto tiene que ser true
     auth: {
-      user: "	lonie81@ethereal.email",
-      pass: "E3v2XqwukaBseZbXNH",
+      user: "	lonie81@ethereal.email", // user: testAccount.user, // generated ethereal user
+      pass: "E3v2XqwukaBseZbXNH",   //  pass: testAccount.pass, // generated ethereal password
+  
+     
     },
   });
   Users.findOne({ where: { id: id } })
@@ -106,7 +108,7 @@ const buyProducts = (req, res, next) => {
           });
           let sendInfo = {
             from: "remitente",
-            to: "juancruzmontanelli@gmail.com",
+            to: user.mail,
             subject: "Compra realizada",
             html: `<body> <h1>Hola ${user.name}!</h1> <div>${productCard}</div> </body>`,
           };
